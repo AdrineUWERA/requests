@@ -1,0 +1,53 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src -d dist",
+    "start": "npm run build && node ./dist/index",
+    "dev": "nodemon --exec babel-node src/index.js",
+    "make_model": "npx sequelize-cli model:generate --name",
+    "make_migration": "npx sequelize-cli migration:create --name",
+    "migrate": " npx sequelize-cli db:migrate",
+    "migrate_undo": " npx sequelize-cli db:migrate:undo",
+    "migrate_undo_all": "npx sequelize-cli db:migrate:undo:all",
+    "make_seed": " npx sequelize-cli seed:generate --name",
+    "seed": " npx sequelize-cli db:seed:all",
+    "seed_undo": " npx sequelize-cli db:seed:undo",
+    "seed_undo_all": " npx sequelize-cli db:seed:undo:all"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.22.6",
+    "@babel/node": "^7.22.19",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-transform-runtime": "^7.22.7",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/register": "^7.22.5",
+    "@sendgrid/mail": "^7.7.0",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "redis": "^4.6.7",
+    "sequelize": "^6.33.0",
+    "speakeasy": "^2.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "babel-cli": "^6.26.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.1"
+  }
+}
