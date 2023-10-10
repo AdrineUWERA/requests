@@ -13,16 +13,32 @@ async function addComment(details) {
 async function getById(id) {
   const request = await Request.findOne({
     where: { id: id },
-    include: {
-      model: Comment,
-      as: "requestComment",
-      order: [["createdAt", "DESC"]],
-      attributes: {
-        exclude: ["commenterId", "updatedAt"],
+    include: [
+      {
+        model: Comment,
+        as: "requestComment",
+        order: [["createdAt", "DESC"]],
+        attributes: {
+          exclude: ["commenterId", "updatedAt"],
+        },
+        include: {
+          model: User,
+          as: "userComment",
+          attributes: {
+            exclude: [
+              "id",
+              "password",
+              "createdAt",
+              "updatedAt",
+              "tfa_enabled",
+              "status",
+            ],
+          },
+        },
       },
-      include: {
+      {
         model: User,
-        as: "userComment",
+        as: "sender",
         attributes: {
           exclude: [
             "id",
@@ -34,69 +50,151 @@ async function getById(id) {
           ],
         },
       },
-    },
-    order: [["createdAt", "DESC"]],
-  });
-  let receiver;
-  let sender;
-  if (request) {
-    sender = await User.findOne({
-      where: { id: request.senderId },
-      attributes: {
-        exclude: [
-          "id",
-          "password",
-          "createdAt",
-          "updatedAt",
-          "tfa_enabled",
-          "status",
-        ],
+      {
+        model: User,
+        as: "receiver",
+        attributes: {
+          exclude: [
+            "id",
+            "password",
+            "createdAt",
+            "updatedAt",
+            "tfa_enabled",
+            "status",
+          ],
+        },
       },
-    });
-    receiver = await User.findOne({
-      where: { id: request.receiverId },
-      attributes: {
-        exclude: [
-          "id",
-          "password",
-          "createdAt",
-          "updatedAt",
-          "tfa_enabled",
-          "status",
-        ],
-      },
-    });
-  }
-
-  return {
-    ...request.dataValues,
-    sender: sender.dataValues,
-    receiver: receiver.dataValues,
-  };
-}
-
-async function getBySender(id) {
-  return await Request.findAll({
-    where: { senderId: id },
+    ],
     order: [["createdAt", "DESC"]],
   });
+
+  return request;
 }
 
-async function getByReceiver(id) {
-  return await Request.findAll({
-    where: { receiverId: id },
-    order: [["createdAt", "DESC"]],
-  });
-}
-
-async function getAllRequest({ offset, limit }) {
+async function getBySender({ userId, offset, limit }) {
   const requests = await Request.findAll({
+    where: { senderId: userId },
+    include: [
+      {
+        model: User,
+        as: "sender",
+        attributes: {
+          exclude: [
+            "id",
+            "password",
+            "createdAt",
+            "updatedAt",
+            "tfa_enabled",
+            "status",
+          ],
+        },
+      },
+      {
+        model: User,
+        as: "receiver",
+        attributes: {
+          exclude: [
+            "id",
+            "password",
+            "createdAt",
+            "updatedAt",
+            "tfa_enabled",
+            "status",
+          ],
+        },
+      },
+    ],
     order: [["createdAt", "DESC"]],
     offset,
     limit,
   });
 
-  const count = await Request.count();
+  const count = await Request.count({ where: { senderId: userId } });
+  return { requests, count };
+}
+
+async function getByReceiver({ userId, offset, limit }) {
+  const requests = await Request.findAll({
+    where: { receiverId: userId },
+    include: [
+      {
+        model: User,
+        as: "sender",
+        attributes: {
+          exclude: [
+            "id",
+            "password",
+            "createdAt",
+            "updatedAt",
+            "tfa_enabled",
+            "status",
+          ],
+        },
+      },
+      {
+        model: User,
+        as: "receiver",
+        attributes: {
+          exclude: [
+            "id",
+            "password",
+            "createdAt",
+            "updatedAt",
+            "tfa_enabled",
+            "status",
+          ],
+        },
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+    offset,
+    limit,
+  });
+
+  const count = await Request.count({
+    where: { receiverId: userId },
+  });
+  return { requests, count };
+}
+
+async function getAllRequest({ offset, limit }) {
+  const requests = await Request.findAll({
+    include: [
+      {
+        model: User,
+        as: "sender",
+        attributes: {
+          exclude: [
+            "id",
+            "password",
+            "createdAt",
+            "updatedAt",
+            "tfa_enabled",
+            "status",
+          ],
+        },
+      },
+      {
+        model: User,
+        as: "receiver",
+        attributes: {
+          exclude: [
+            "id",
+            "password",
+            "createdAt",
+            "updatedAt",
+            "tfa_enabled",
+            "status",
+          ],
+        },
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+    offset,
+    limit,
+  });
+
+  const count = requests.length;
 
   return { requests, count };
 }

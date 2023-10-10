@@ -32,6 +32,16 @@ async function getUserByEmail(email) {
   return user;
 }
 
+async function getReceivers({ offset, limit }) {
+  const users = await User.findAll({
+    where: { role: ["ADMINISTRATOR", "FACILITATOR"] },
+    offset,
+    limit,
+  });
+  const count = users.length;
+  return { users, count };
+}
+
 export default {
   createUser,
   getUserById,
@@ -39,4 +49,5 @@ export default {
   disableTFA,
   updateUser,
   getUserByEmail,
+  getReceivers,
 };

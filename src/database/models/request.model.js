@@ -30,16 +30,19 @@ Request.hasMany(Comment, {
   onDelete: "CASCADE",
 });
 
-User.hasMany(Request, {
-  as: "userRequest",
+Request.belongsTo(User, {
+  as: "sender",
   foreignKey: "senderId",
   onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
-User.hasMany(Request, {
-  as: "receiverRequest",
+Request.belongsTo(User, {
+  as: "receiver",
   foreignKey: "receiverId",
   onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
+
 
 export default Request;

@@ -19,7 +19,7 @@ requestRouter.post(
   validateParams(paramsSchemas.receiverIdSchema),
   validate(requestSchemas.RequestSchema),
   checkPermission("STUDENT"),
-  requestControllers.sendRequest
+  asyncWrapper(requestControllers.sendRequest)
 );
 
 requestRouter.get(

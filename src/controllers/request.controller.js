@@ -16,24 +16,54 @@ const sendRequest = async (req, res) => {
 };
 
 const getUserRequest = async (req, res) => {
-  const requests = await requestServices.getBySender(req.user.id);
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const offset = (page - 1) * limit;
 
-  return res
-    .status(200)
-    .json({ code: 200, message: "Sent requests fetched", requests });
+  const { id: userId } = req.user;
+  const { requests, count } = await requestServices.getBySender({
+    userId,
+    offset,
+    limit,
+  });
+  const totalPages = Math.ceil(count / limit);
+  return res.status(200).json({
+    code: 200,
+    message: "Sent requests fetched",
+    requests,
+    page,
+    totalPages: totalPages === 0 ? 1 : totalPages,
+    totalCount: count,
+  });
 };
 
 const getReceiverRequest = async (req, res) => {
-  const requests = await requestServices.getByReceiver(req.user.id);
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const offset = (page - 1) * limit;
 
-  return res
-    .status(200)
-    .json({ code: 200, message: "Received requests fetched", requests });
+  const { id: userId } = req.user;
+  const { requests, count } = await requestServices.getByReceiver({
+    userId,
+    offset,
+    limit,
+  });
+
+  const totalPages = Math.ceil(count / limit);
+
+  return res.status(200).json({
+    code: 200,
+    message: "Received requests fetched",
+    requests,
+    page,
+    totalPages: totalPages === 0 ? 1 : totalPages,
+    totalCount: count,
+  });
 };
 
 const getAllRequest = async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 20;
+  const limit = parseInt(req.query.limit, 10) || 10;
   const offset = (page - 1) * limit;
   const { requests, count } = await requestServices.getAllRequest({
     offset,

@@ -39,4 +39,6 @@ userRouter.post(
   asyncWrapper(userControllers.verifyOTP)
 );
 
+userRouter.get("/receivers", isAuthenticated, asyncWrapper(userControllers.getAllReceivers));
+
 export default userRouter;

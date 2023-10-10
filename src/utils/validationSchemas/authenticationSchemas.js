@@ -14,7 +14,7 @@ const emailSchema = Joi.string()
 const passwordSchema = Joi.string()
   .required()
   .pattern(
-    /^(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).*(?=.*[A-Z]).*(?=.*[0-9]).*(?=.*[a-z]).{8,}$/
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/
   )
   .messages(errorMessage("Password"));
 

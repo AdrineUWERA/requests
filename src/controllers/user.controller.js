@@ -33,7 +33,7 @@ const login = async (req, res) => {
         email: userExists.email,
         fullName: userExists.fullName,
         role: userExists.role,
-      }; 
+      };
       if (userExists.tfa_enabled === true) {
         return twoFactorAuth(res, userExists);
       }
@@ -57,7 +57,7 @@ const verifyOTP = asyncWrapper(async (req, res) => {
   const result = await redisClient.get(email, (err, data) => data);
   const redisOTP = result.split("=")[0];
   const redisToken = result.split("=")[1];
-   
+
   if (redisOTP === verificationCode) {
     const user = tokenUtils.decodeToken(redisToken);
     req.user = user;
@@ -94,9 +94,29 @@ const tfaEnableDisable = async (req, res) => {
   });
 };
 
+const getAllReceivers = async (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const offset = (page - 1) * limit;
+  const { users, count } = await userServices.getReceivers({
+    offset,
+    limit,
+  });
+  const totalPages = Math.ceil(count / limit);
+  return res.status(200).json({
+    code: 200,
+    message: "All receivers fetched",
+    users,
+    page,
+    totalPages: totalPages === 0 ? 1 : totalPages,
+    totalCount: count,
+  });
+};
+
 export default {
   signup,
   login,
   verifyOTP,
   tfaEnableDisable,
+  getAllReceivers,
 };
