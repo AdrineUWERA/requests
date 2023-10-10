@@ -4,38 +4,32 @@ import { Sequelize, DataTypes } from "sequelize";
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface) {
-    await queryInterface.createTable("users", {
+    await queryInterface.createTable("comments", {
       id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
         primaryKey: true,
         allowNull: false,
       },
-      fullName: {
-        type: Sequelize.STRING,
+      requestId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "requests",
+          key: "id",
+        },
         allowNull: false,
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: true,
-        unique: true,
-      },
-      password: {
-        type: Sequelize.STRING,
+      commenterId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "users",
+          key: "id",
+        },
         allowNull: false,
       },
-      tfa_enabled: {
-        type: Sequelize.BOOLEAN,
+      message: {
+        type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: false,
-      },
-      role: {
-        type: DataTypes.ENUM("STUDENT", "ADMINISTRATOR", "FACILITATOR"),
-        defaultValue: "STUDENT",
-      },
-      status: {
-        type: DataTypes.ENUM("INACTIVE", "ACTIVE"),
-        defaultValue: "ACTIVE",
       },
       createdAt: {
         allowNull: false,
@@ -48,6 +42,6 @@ export default {
     });
   },
   async down(queryInterface) {
-    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("comments");
   },
 };

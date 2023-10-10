@@ -1,5 +1,7 @@
 import express from "express";
 import userRouter from "./user.route";
+import requestRouter from "./request.route";
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -7,5 +9,6 @@ router.get("/", (req, res) => {
 });
 
 router.use("/users", userRouter);
+router.use("/", requestRouter);
 
 export default router;

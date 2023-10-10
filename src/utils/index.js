@@ -3,5 +3,14 @@ import tokenUtils from "./token";
 import OtpUtils from "./otp";
 import authSchemas from "./validationSchemas/authenticationSchemas";
 import paramsSchemas from "./validationSchemas/paramsSchemas";
-
-export { passwordUtils, tokenUtils, OtpUtils, authSchemas, paramsSchemas };
+import requestSchemas from "./validationSchemas/requestSchemas";
+import commentSchemas from "./validationSchemas/commentSchemas";
+export {
+  passwordUtils,
+  tokenUtils,
+  OtpUtils,
+  authSchemas,
+  requestSchemas,
+  paramsSchemas,
+  commentSchemas,
+};

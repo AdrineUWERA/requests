@@ -9,10 +9,7 @@ import {
   isAuthenticated,
 } from "../middlewares";
 
-import {
-  paramsSchemas,
-  authSchemas,
-} from "../utils";
+import { paramsSchemas, authSchemas } from "../utils";
 
 const userRouter = express.Router();
 
@@ -20,27 +17,26 @@ userRouter.post(
   "/signup",
   validate(authSchemas.SignUpSchema),
   userMiddleware.userEmailExists,
-  userControllers.signup
+  asyncWrapper(userControllers.signup)
 );
 
 userRouter.post(
   "/login",
   validate(authSchemas.LoginSchema),
-  userControllers.login
+  asyncWrapper(userControllers.login)
 );
 
 userRouter.patch(
   "/tfa-enable-disable",
   isAuthenticated,
-  userControllers.tfaEnableDisable
+  asyncWrapper(userControllers.tfaEnableDisable)
 );
 
 userRouter.post(
   "/verify/:email",
   validateParams(paramsSchemas.emailParamSchema),
   userMiddleware.userEmailExistsProceed,
-  userControllers.verifyOTP
+  asyncWrapper(userControllers.verifyOTP)
 );
-
 
 export default userRouter;
