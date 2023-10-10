@@ -89,10 +89,23 @@ async function getByReceiver(id) {
   });
 }
 
+async function getAllRequest({ offset, limit }) {
+  const requests = await Request.findAll({
+    order: [["createdAt", "DESC"]],
+    offset,
+    limit,
+  });
+
+  const count = await Request.count();
+
+  return { requests, count };
+}
+
 export default {
   createRequest,
   getById,
   getBySender,
   getByReceiver,
   addComment,
+  getAllRequest,
 };

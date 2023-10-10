@@ -2,7 +2,12 @@ import express from "express";
 import requestControllers from "../controllers/request.controller";
 import { asyncWrapper } from "../helpers";
 
-import { validate, validateParams, isAuthenticated } from "../middlewares";
+import {
+  validate,
+  validateParams,
+  isAuthenticated,
+  checkPermission,
+} from "../middlewares";
 
 import { paramsSchemas, requestSchemas } from "../utils";
 
@@ -13,6 +18,7 @@ requestRouter.post(
   isAuthenticated,
   validateParams(paramsSchemas.receiverIdSchema),
   validate(requestSchemas.RequestSchema),
+  checkPermission("STUDENT"),
   requestControllers.sendRequest
 );
 
@@ -20,26 +26,35 @@ requestRouter.get(
   "/requests/:id",
   isAuthenticated,
   validateParams(paramsSchemas.requestIdSchema),
-  requestControllers.getRequestDetails
+  asyncWrapper(requestControllers.getRequestDetails)
 );
 
 requestRouter.post(
   "/requests/:id/comments",
   isAuthenticated,
   validateParams(paramsSchemas.requestIdSchema),
-  requestControllers.commenting
+  asyncWrapper(requestControllers.commenting)
 );
 
 requestRouter.get(
   "/sender/requests",
   isAuthenticated,
-  requestControllers.getUserRequest
+  checkPermission("STUDENT"),
+  asyncWrapper(requestControllers.getUserRequest)
 );
 
 requestRouter.get(
   "/receiver/requests",
   isAuthenticated,
-  requestControllers.getReceiverRequest
+  checkPermission(["ADMINISTRATOR", "FACILITATOR"]),
+  asyncWrapper(requestControllers.getReceiverRequest)
+);
+
+requestRouter.get(
+  "/requests",
+  isAuthenticated,
+  checkPermission("ADMINISTRATOR"),
+  asyncWrapper(requestControllers.getAllRequest)
 );
 
 export default requestRouter;

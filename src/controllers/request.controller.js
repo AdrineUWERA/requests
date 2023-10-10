@@ -31,6 +31,25 @@ const getReceiverRequest = async (req, res) => {
     .json({ code: 200, message: "Received requests fetched", requests });
 };
 
+const getAllRequest = async (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 20;
+  const offset = (page - 1) * limit;
+  const { requests, count } = await requestServices.getAllRequest({
+    offset,
+    limit,
+  });
+  const totalPages = Math.ceil(count / limit);
+  return res.status(200).json({
+    code: 200,
+    message: "All requests fetched",
+    requests,
+    page,
+    totalPages: totalPages === 0 ? 1 : totalPages,
+    totalCount: count,
+  });
+};
+
 const getRequestDetails = async (req, res) => {
   const request = await requestServices.getById(req.params.id);
 
@@ -56,4 +75,5 @@ export default {
   getReceiverRequest,
   getRequestDetails,
   commenting,
+  getAllRequest,
 };

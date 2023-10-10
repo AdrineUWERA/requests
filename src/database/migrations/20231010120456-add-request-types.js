@@ -4,7 +4,7 @@ import { DataTypes } from "sequelize";
 export default {
   up: async (queryInterface) => {
     await queryInterface.addColumn("requests", "type", {
-      type: DataTypes.ENUM("ACAMEDIC", "ADMINISTRATIVE"),
+      type: DataTypes.ENUM("ADMINISTRATIVE", "ACADEMIC"),
       allowNull: false,
     });
   },

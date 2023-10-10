@@ -19,7 +19,7 @@ const Request = sequelize.define("requests", {
     allowNull: false,
   },
   type: {
-    type: DataTypes.ENUM("ACAMEDIC", "ADMINISTRATIVE"),
+    type: DataTypes.ENUM("ADMINISTRATIVE", "ACADEMIC"),
     allowNull: false,
   },
 });

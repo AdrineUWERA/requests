@@ -44,7 +44,7 @@ export default {
       updatedAt: {
         allowNull: false,
         type: DataTypes.DATE,
-      },
+      }, 
     });
   },
   async down(queryInterface) {
