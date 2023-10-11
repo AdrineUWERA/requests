@@ -53,7 +53,7 @@ requestRouter.get(
 requestRouter.get(
   "/requests",
   isAuthenticated,
-  checkPermission("ADMINISTRATOR"),
+  // checkPermission("ADMINISTRATOR"),
   asyncWrapper(requestControllers.getAllRequest)
 );
 

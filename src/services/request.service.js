@@ -105,11 +105,13 @@ async function getBySender({ userId, offset, limit }) {
       },
     ],
     order: [["createdAt", "DESC"]],
-    offset,
-    limit,
+    // offset,
+    // limit,
   });
 
-  const count = await Request.count({ where: { senderId: userId } });
+  const count = await Request.count(
+    // { where: { senderId: userId } }
+    );
   return { requests, count };
 }
 
@@ -147,13 +149,16 @@ async function getByReceiver({ userId, offset, limit }) {
       },
     ],
     order: [["createdAt", "DESC"]],
-    offset,
-    limit,
+    // offset,
+    // limit,
   });
 
-  const count = await Request.count({
-    where: { receiverId: userId },
-  });
+  const count = await Request
+    .count
+    //   {
+    //   where: { receiverId: userId },
+    // }
+    ();
   return { requests, count };
 }
 
@@ -190,8 +195,8 @@ async function getAllRequest({ offset, limit }) {
       },
     ],
     order: [["createdAt", "DESC"]],
-    offset,
-    limit,
+    // offset,
+    // limit,
   });
 
   const count = requests.length;

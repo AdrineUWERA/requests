@@ -65,18 +65,43 @@ const getAllRequest = async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
   const offset = (page - 1) * limit;
-  const { requests, count } = await requestServices.getAllRequest({
-    offset,
-    limit,
-  });
-  const totalPages = Math.ceil(count / limit);
+  let allrequests = [];
+  let totalcount = 0;
+  if (req.user.role === "ADMINISTRATOR") {
+    const { requests, count } = await requestServices.getAllRequest({
+      offset,
+      limit,
+    });
+    allrequests = requests;
+    totalcount = count;
+  } else if (req.user.role === "STUDENT") {
+    const { id: userId } = req.user;
+    const { requests, count } = await requestServices.getBySender({
+      userId,
+      offset,
+      limit,
+    });
+    allrequests = requests;
+    totalcount = count;
+  } else if (req.user.role === "FACILITATOR") {
+    const { id: userId } = req.user;
+    const { requests, count } = await requestServices.getByReceiver({
+      userId,
+      offset,
+      limit,
+    });
+    allrequests = requests;
+    totalcount = count;
+  }
+
+  const totalPages = Math.ceil(totalcount / limit);
   return res.status(200).json({
     code: 200,
     message: "All requests fetched",
-    requests,
-    page,
-    totalPages: totalPages === 0 ? 1 : totalPages,
-    totalCount: count,
+    requests: allrequests,
+    // page,
+    // totalPages: totalPages === 0 ? 1 : totalPages,
+    // totalCount: totalcount,
   });
 };
 
